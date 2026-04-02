@@ -2,11 +2,20 @@
 
 Local plugin to manage reference dictionaries for repeatable profile fields.
 
+## Requirements
+
+- Moodle 4.5+
+- Database baseline from Moodle: PostgreSQL 13+ or MySQL 8.0+
+- Works with Moodle DB abstraction (no vendor-specific SQL)
+- Intended integration with `profilefield_repeatable` plugin
+
 ## Features
 
 - Create and update reference domains
 - Import code and label pairs from CSV
 - Resolve labels by code via web services
+- Cache-backed bulk label resolution
+- Cross-database compatible schema (`local_profilefield_repeatable_domain`, `local_profilefield_repeatable_item`)
 
 ## Installation
 
@@ -22,3 +31,8 @@ Local plugin to manage reference dictionaries for repeatable profile fields.
 
 This plugin provides web service functions for upserting reference items and resolving labels.
 You must grant the capability `local/profilefield_repeatable:managereference` to allow access.
+
+## Notes
+
+- This plugin stores reference dictionaries only (no personal profile data).
+- Keep this plugin installed when using domain mappings in `profilefield_repeatable`.

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2026-04-02 (ALPHA)
+
+### Changed
+- Documentation aligned with Moodle 4.5+ database baseline (PostgreSQL 13+ / MySQL 8.0+)
+- Clarified cross-database compatibility and integration notes with profilefield_repeatable
+
 ## [0.1.0] - 2026-04-01 (ALPHA)
 
 ### Added

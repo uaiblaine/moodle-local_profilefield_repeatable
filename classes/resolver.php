@@ -83,7 +83,7 @@ class Resolver {
 
         $results = [];
         $missingcodes = [];
-        $cached = $cache->get_many(array_values($cachekeys));
+        $cached = self::cache_get_many_safe($cache, array_values($cachekeys));
         foreach ($cachekeys as $code => $cachekey) {
             $value = $cached[$cachekey] ?? false;
             if ($value === false) {
@@ -117,7 +117,7 @@ class Resolver {
             $code = (string)$record->code;
             $label = (string)$record->label;
             $results[$code] = $label;
-            $cache->set(self::build_cache_key($domain, $code), $label);
+            self::cache_set_safe($cache, self::build_cache_key($domain, $code), $label);
         }
 
         return $results;
@@ -175,6 +175,37 @@ class Resolver {
      */
     private static function build_cache_key(string $domain, string $code): string {
         return $domain . ':' . $code;
+    }
+
+    /**
+     * Read multiple keys from cache, returning empty map on failure.
+     *
+     * @param cache $cache
+     * @param string[] $keys
+     * @return array
+     */
+    private static function cache_get_many_safe(cache $cache, array $keys): array {
+        try {
+            return $cache->get_many($keys);
+        } catch (\Throwable $e) {
+            debugging('local_profilefield_repeatable: cache get_many failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            return [];
+        }
+    }
+
+    /**
+     * Write one cache entry and swallow cache layer failures.
+     *
+     * @param cache $cache
+     * @param string $key
+     * @param string $value
+     */
+    private static function cache_set_safe(cache $cache, string $key, string $value): void {
+        try {
+            $cache->set($key, $value);
+        } catch (\Throwable $e) {
+            debugging('local_profilefield_repeatable: cache set failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 
     /**

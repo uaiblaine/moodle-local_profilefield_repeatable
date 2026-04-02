@@ -164,8 +164,9 @@ class Manager {
 
         $normaliseditems = [];
         foreach ($items as $item) {
-            $code = trim((string)($item['code'] ?? ''));
-            $label = trim((string)($item['label'] ?? ''));
+            $item = $this->normalise_item($item);
+            $code = $item['code'];
+            $label = $item['label'];
             if ($code === '') {
                 $counts['ignored']++;
                 continue;
@@ -305,6 +306,34 @@ class Manager {
      * Purge label cache.
      */
     private function purge_label_cache(): void {
-        cache::make('local_profilefield_repeatable', 'labels')->purge();
+        try {
+            cache::make('local_profilefield_repeatable', 'labels')->purge();
+        } catch (\Throwable $e) {
+            debugging('local_profilefield_repeatable: cache purge failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+    }
+
+    /**
+     * Normalise one upsert item to canonical code/label keys.
+     *
+     * @param mixed $item
+     * @return array{code: string, label: string}
+     */
+    private function normalise_item($item): array {
+        if (is_object($item)) {
+            $item = (array)$item;
+        }
+
+        if (!is_array($item)) {
+            return [
+                'code' => '',
+                'label' => '',
+            ];
+        }
+
+        return [
+            'code' => trim((string)($item['code'] ?? '')),
+            'label' => trim((string)($item['label'] ?? '')),
+        ];
     }
 }
