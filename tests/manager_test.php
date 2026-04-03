@@ -25,7 +25,7 @@ namespace local_profilefield_repeatable;
  * @copyright  2026 Anderson Blaine
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class Manager_test extends \advanced_testcase {
+final class manager_test extends \advanced_testcase {
     /** @var string Test city label. */
     private const CITY_LABEL = 'Sao Paulo';
     /**

@@ -112,7 +112,7 @@ class Manager {
                 continue;
             }
 
-            $row = str_getcsv($line);
+            $row = str_getcsv($line, ',', '"', '\\');
             if (count($row) < 2) {
                 continue;
             }

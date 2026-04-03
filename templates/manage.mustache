@@ -1,12 +1,47 @@
+{{!
+    @template local_profilefield_repeatable/manage
+
+    Management page for reference domains and CSV imports.
+
+    Example context (json):
+    {
+        "errornotification": "",
+        "csvhelp": "Format: code,label. Header line is optional.",
+        "url": "/local/profilefield_repeatable/manage.php",
+        "sesskey": "abc123",
+        "createdomain": "Create or update domain",
+        "importcsv": "Import CSV",
+        "domainshortname": "Domain shortname",
+        "domainname": "Domain name",
+        "csvfile": "CSV file",
+        "csvtext": "CSV content (optional)",
+        "existingdomains": "Existing domains",
+        "shortname": "Shortname",
+        "name": "Name",
+        "timemodified": "Time modified",
+        "none": "None",
+        "placeholderdomainshortname": "diretoria",
+        "placeholderdomainname": "Diretoria",
+        "hasdomains": true,
+        "domains": [
+            {
+                "shortname": "diretoria",
+                "name": "Diretoria",
+                "timemodified": "2 April 2026"
+            }
+        ]
+    }
+}}
+
 {{{errornotification}}}
 
-<p class="text-muted mb-4">{{csvhelp}}</p>
+<p class="text-muted mb-4">{{#csvhelp}}{{csvhelp}}{{/csvhelp}}{{^csvhelp}}CSV help{{/csvhelp}}</p>
 
-<form method="post" action="{{url}}" class="mb-4 card card-body">
+<form method="post" action="{{#url}}{{url}}{{/url}}{{^url}}#{{/url}}" class="mb-4 card card-body">
     <input type="hidden" name="action" value="createdomain">
     <input type="hidden" name="sesskey" value="{{sesskey}}">
 
-    <h3 class="h5">{{createdomain}}</h3>
+    <h3 class="h5">{{#createdomain}}{{createdomain}}{{/createdomain}}{{^createdomain}}Create domain{{/createdomain}}</h3>
 
     <div class="row g-3 align-items-end">
         <div class="col-md-4">
@@ -37,11 +72,11 @@
     </div>
 </form>
 
-<form method="post" action="{{url}}" class="mb-4 card card-body" enctype="multipart/form-data">
+<form method="post" action="{{#url}}{{url}}{{/url}}{{^url}}#{{/url}}" class="mb-4 card card-body" enctype="multipart/form-data">
     <input type="hidden" name="action" value="importcsv">
     <input type="hidden" name="sesskey" value="{{sesskey}}">
 
-    <h3 class="h5">{{importcsv}}</h3>
+    <h3 class="h5">{{#importcsv}}{{importcsv}}{{/importcsv}}{{^importcsv}}Import CSV{{/importcsv}}</h3>
 
     <div class="row g-3">
         <div class="col-md-4">
@@ -71,7 +106,7 @@
     </div>
 </form>
 
-<h3 class="h5">{{existingdomains}}</h3>
+<h3 class="h5">{{#existingdomains}}{{existingdomains}}{{/existingdomains}}{{^existingdomains}}Existing domains{{/existingdomains}}</h3>
 
 {{#hasdomains}}
 <table class="table table-striped">
