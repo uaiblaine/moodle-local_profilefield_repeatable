@@ -29,5 +29,26 @@
  * @return bool
  */
 function xmldb_local_profilefield_repeatable_upgrade(int $oldversion): bool {
+    global $DB;
+
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2026030601) {
+        $legacydomain = new xmldb_table('local_pfr_domain');
+        $legacyitem = new xmldb_table('local_pfr_item');
+        $currentdomain = new xmldb_table('local_profilefield_repeatable_domain');
+        $currentitem = new xmldb_table('local_profilefield_repeatable_item');
+
+        if ($dbman->table_exists($legacydomain) && !$dbman->table_exists($currentdomain)) {
+            $dbman->rename_table($legacydomain, $currentdomain->getName());
+        }
+
+        if ($dbman->table_exists($legacyitem) && !$dbman->table_exists($currentitem)) {
+            $dbman->rename_table($legacyitem, $currentitem->getName());
+        }
+
+        upgrade_plugin_savepoint(true, 2026030601, 'local', 'profilefield_repeatable');
+    }
+
     return true;
 }

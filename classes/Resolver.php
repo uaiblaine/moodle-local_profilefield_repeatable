@@ -27,6 +27,18 @@ use core_text;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class Resolver {
+    /** @var string Current domain table name. */
+    private const DOMAIN_TABLE = 'local_profilefield_repeatable_domain';
+
+    /** @var string Current item table name. */
+    private const ITEM_TABLE = 'local_profilefield_repeatable_item';
+
+    /** @var string Legacy domain table name. */
+    private const LEGACY_DOMAIN_TABLE = 'local_pfr_domain';
+
+    /** @var string Legacy item table name. */
+    private const LEGACY_ITEM_TABLE = 'local_pfr_item';
+
     /** @var string Domain shortname pattern. */
     private const DOMAIN_PATTERN = '/^[a-z0-9_]+$/';
 
@@ -97,7 +109,12 @@ class Resolver {
             return $results;
         }
 
-        $domainid = $DB->get_field('local_profilefield_repeatable_domain', 'id', ['shortname' => $domain]);
+        $tables = self::get_table_names();
+        if ($tables === null) {
+            return $results;
+        }
+
+        $domainid = $DB->get_field($tables['domain'], 'id', ['shortname' => $domain]);
         if (!$domainid) {
             return $results;
         }
@@ -106,7 +123,7 @@ class Resolver {
         $params['domainid'] = (int)$domainid;
 
         $records = $DB->get_records_select(
-            'local_profilefield_repeatable_item',
+            $tables['item'],
             "domainid = :domainid AND code $insql",
             $params,
             '',
@@ -137,7 +154,12 @@ class Resolver {
             return false;
         }
 
-        return $DB->record_exists('local_profilefield_repeatable_domain', ['shortname' => $domain]);
+        $tables = self::get_table_names();
+        if ($tables === null) {
+            return false;
+        }
+
+        return $DB->record_exists($tables['domain'], ['shortname' => $domain]);
     }
 
     /** @var bool|null Static cache for table availability (only caches true). */
@@ -153,17 +175,39 @@ class Resolver {
             return true;
         }
 
-        global $DB;
-
-        $dbman = $DB->get_manager();
-        $available = $dbman->table_exists('local_profilefield_repeatable_domain') &&
-            $dbman->table_exists('local_profilefield_repeatable_item');
-
+        $available = self::get_table_names() !== null;
         if ($available) {
             self::$tablesavailable = true;
         }
 
         return $available;
+    }
+
+    /**
+     * Resolve active table names (current first, legacy fallback).
+     *
+     * @return array{domain: string, item: string}|null
+     */
+    private static function get_table_names(): ?array {
+        global $DB;
+
+        $dbman = $DB->get_manager();
+
+        $hascurrent =
+            $dbman->table_exists(self::DOMAIN_TABLE) &&
+            $dbman->table_exists(self::ITEM_TABLE);
+        if ($hascurrent) {
+            return ['domain' => self::DOMAIN_TABLE, 'item' => self::ITEM_TABLE];
+        }
+
+        $haslegacy =
+            $dbman->table_exists(self::LEGACY_DOMAIN_TABLE) &&
+            $dbman->table_exists(self::LEGACY_ITEM_TABLE);
+        if ($haslegacy) {
+            return ['domain' => self::LEGACY_DOMAIN_TABLE, 'item' => self::LEGACY_ITEM_TABLE];
+        }
+
+        return null;
     }
 
     /**
