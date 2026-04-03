@@ -23,7 +23,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use invalid_parameter_exception;
-use local_profilefield_repeatable\local\manager;
+use local_profilefield_repeatable\local\Manager;
 
 /**
  * External API for reference upsert.

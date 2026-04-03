@@ -23,7 +23,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use invalid_parameter_exception;
-use local_profilefield_repeatable\resolver;
+use local_profilefield_repeatable\Resolver;
 
 /**
  * External API to resolve reference labels.
@@ -68,7 +68,7 @@ class GetReferenceLabels extends external_api {
             throw new invalid_parameter_exception('Maximum batch size exceeded (5000).');
         }
 
-        $labels = resolver::resolve_bulk($params['domain'], $params['codes']);
+        $labels = Resolver::resolve_bulk($params['domain'], $params['codes']);
 
         $items = [];
         foreach ($labels as $code => $label) {
