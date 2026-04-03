@@ -65,7 +65,9 @@ class GetReferenceLabels extends external_api {
         require_capability('local/profilefield_repeatable:managereference', $context);
 
         if (count($params['codes']) > 5000) {
-            throw new invalid_parameter_exception('Maximum batch size exceeded (5000).');
+            throw new invalid_parameter_exception(
+                get_string('maxbatchsizeexceeded', 'local_profilefield_repeatable', 5000)
+            );
         }
 
         $labels = Resolver::resolve_bulk($params['domain'], $params['codes']);

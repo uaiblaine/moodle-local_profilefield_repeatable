@@ -1,0 +1,99 @@
+{{{errornotification}}}
+
+<p class="text-muted mb-4">{{csvhelp}}</p>
+
+<form method="post" action="{{url}}" class="mb-4 card card-body">
+    <input type="hidden" name="action" value="createdomain">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <h3 class="h5">{{createdomain}}</h3>
+
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="id_domainshortname">{{domainshortname}}</label>
+            <input
+                type="text"
+                name="domainshortname"
+                id="id_domainshortname"
+                class="form-control"
+                placeholder="{{placeholderdomainshortname}}"
+            >
+        </div>
+
+        <div class="col-md-5">
+            <label for="id_domainname">{{domainname}}</label>
+            <input
+                type="text"
+                name="domainname"
+                id="id_domainname"
+                class="form-control"
+                placeholder="{{placeholderdomainname}}"
+            >
+        </div>
+
+        <div class="col-md-3">
+            <input type="submit" class="btn btn-primary w-100" value="{{createdomain}}">
+        </div>
+    </div>
+</form>
+
+<form method="post" action="{{url}}" class="mb-4 card card-body" enctype="multipart/form-data">
+    <input type="hidden" name="action" value="importcsv">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <h3 class="h5">{{importcsv}}</h3>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label for="id_importdomainshortname">{{domainshortname}}</label>
+            <input
+                type="text"
+                name="importdomainshortname"
+                id="id_importdomainshortname"
+                class="form-control"
+                placeholder="{{placeholderdomainshortname}}"
+            >
+        </div>
+
+        <div class="col-md-8">
+            <label for="id_csvfile">{{csvfile}}</label>
+            <input type="file" name="csvfile" id="id_csvfile" class="form-control" accept=".csv,text/csv,text/plain">
+        </div>
+
+        <div class="col-12">
+            <label for="id_csvtext">{{csvtext}}</label>
+            <textarea name="csvtext" id="id_csvtext" class="form-control" rows="6"></textarea>
+        </div>
+
+        <div class="col-12">
+            <input type="submit" class="btn btn-secondary" value="{{importcsv}}">
+        </div>
+    </div>
+</form>
+
+<h3 class="h5">{{existingdomains}}</h3>
+
+{{#hasdomains}}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{{shortname}}</th>
+            <th>{{name}}</th>
+            <th>{{timemodified}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#domains}}
+        <tr>
+            <td>{{shortname}}</td>
+            <td>{{name}}</td>
+            <td>{{timemodified}}</td>
+        </tr>
+        {{/domains}}
+    </tbody>
+</table>
+{{/hasdomains}}
+
+{{^hasdomains}}
+<div class="alert alert-info" role="alert">{{none}}</div>
+{{/hasdomains}}

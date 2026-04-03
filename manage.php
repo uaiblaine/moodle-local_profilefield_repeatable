@@ -99,150 +99,37 @@ try {
 
 echo $OUTPUT->header();
 
-if ($error !== '') {
-    echo $OUTPUT->notification($error, 'notifyproblem');
-}
-
-echo html_writer::tag('p', s(get_string('csvhelp', 'local_profilefield_repeatable')), ['class' => 'text-muted mb-4']);
-
-$form = [];
-$form[] = html_writer::start_tag('form', [
-    'method' => 'post',
-    'action' => $PAGE->url,
-    'class' => 'mb-4 card card-body',
-]);
-$form[] = html_writer::empty_tag('input', [
-    'type' => 'hidden',
-    'name' => 'action',
-    'value' => 'createdomain',
-]);
-$form[] = html_writer::empty_tag('input', [
-    'type' => 'hidden',
-    'name' => 'sesskey',
-    'value' => sesskey(),
-]);
-$form[] = html_writer::tag('h3', s(get_string('createdomain', 'local_profilefield_repeatable')), ['class' => 'h5']);
-$form[] = html_writer::start_div('row g-3 align-items-end');
-$form[] = html_writer::start_div('col-md-4');
-$form[] = html_writer::tag(
-    'label',
-    s(get_string('domainshortname', 'local_profilefield_repeatable')),
-    ['for' => 'id_domainshortname']
-);
-$form[] = html_writer::empty_tag('input', [
-    'type' => 'text',
-    'name' => 'domainshortname',
-    'id' => 'id_domainshortname',
-    'class' => 'form-control',
-    'placeholder' => 'diretoria',
-]);
-$form[] = html_writer::end_div();
-$form[] = html_writer::start_div('col-md-5');
-$form[] = html_writer::tag('label', s(get_string('domainname', 'local_profilefield_repeatable')), ['for' => 'id_domainname']);
-$form[] = html_writer::empty_tag('input', [
-    'type' => 'text',
-    'name' => 'domainname',
-    'id' => 'id_domainname',
-    'class' => 'form-control',
-    'placeholder' => 'Diretoria',
-]);
-$form[] = html_writer::end_div();
-$form[] = html_writer::start_div('col-md-3');
-$form[] = html_writer::empty_tag('input', [
-    'type' => 'submit',
-    'class' => 'btn btn-primary w-100',
-    'value' => get_string('createdomain', 'local_profilefield_repeatable'),
-]);
-$form[] = html_writer::end_div();
-$form[] = html_writer::end_div();
-$form[] = html_writer::end_tag('form');
-
-echo implode('', $form);
-
-$importform = [];
-$importform[] = html_writer::start_tag('form', [
-    'method' => 'post',
-    'action' => $PAGE->url,
-    'class' => 'mb-4 card card-body',
-    'enctype' => 'multipart/form-data',
-]);
-$importform[] = html_writer::empty_tag('input', [
-    'type' => 'hidden',
-    'name' => 'action',
-    'value' => 'importcsv',
-]);
-$importform[] = html_writer::empty_tag('input', [
-    'type' => 'hidden',
-    'name' => 'sesskey',
-    'value' => sesskey(),
-]);
-$importform[] = html_writer::tag('h3', s(get_string('importcsv', 'local_profilefield_repeatable')), ['class' => 'h5']);
-$importform[] = html_writer::start_div('row g-3');
-$importform[] = html_writer::start_div('col-md-4');
-$importform[] = html_writer::tag(
-    'label',
-    s(get_string('domainshortname', 'local_profilefield_repeatable')),
-    ['for' => 'id_importdomainshortname']
-);
-$importform[] = html_writer::empty_tag('input', [
-    'type' => 'text',
-    'name' => 'importdomainshortname',
-    'id' => 'id_importdomainshortname',
-    'class' => 'form-control',
-    'placeholder' => 'diretoria',
-]);
-$importform[] = html_writer::end_div();
-$importform[] = html_writer::start_div('col-md-8');
-$importform[] = html_writer::tag('label', s(get_string('csvfile', 'local_profilefield_repeatable')), ['for' => 'id_csvfile']);
-$importform[] = html_writer::empty_tag('input', [
-    'type' => 'file',
-    'name' => 'csvfile',
-    'id' => 'id_csvfile',
-    'class' => 'form-control',
-    'accept' => '.csv,text/csv,text/plain',
-]);
-$importform[] = html_writer::end_div();
-$importform[] = html_writer::start_div('col-12');
-$importform[] = html_writer::tag('label', s(get_string('csvtext', 'local_profilefield_repeatable')), ['for' => 'id_csvtext']);
-$importform[] = html_writer::tag('textarea', '', [
-    'name' => 'csvtext',
-    'id' => 'id_csvtext',
-    'class' => 'form-control',
-    'rows' => 6,
-]);
-$importform[] = html_writer::end_div();
-$importform[] = html_writer::start_div('col-12');
-$importform[] = html_writer::empty_tag('input', [
-    'type' => 'submit',
-    'class' => 'btn btn-secondary',
-    'value' => get_string('importcsv', 'local_profilefield_repeatable'),
-]);
-$importform[] = html_writer::end_div();
-$importform[] = html_writer::end_div();
-$importform[] = html_writer::end_tag('form');
-
-echo implode('', $importform);
-
-echo html_writer::tag('h3', s(get_string('existingdomains', 'local_profilefield_repeatable')), ['class' => 'h5']);
-if (empty($domains)) {
-    echo $OUTPUT->notification(get_string('none'), 'notifyinfo');
-} else {
-    $table = new html_table();
-    $table->head = [
-        get_string('shortname', 'local_profilefield_repeatable'),
-        get_string('name', 'local_profilefield_repeatable'),
-        get_string('timemodified', 'local_profilefield_repeatable'),
+$domainrows = [];
+foreach ($domains as $domain) {
+    $domainrows[] = [
+        'shortname' => (string)$domain->shortname,
+        'name' => (string)$domain->name,
+        'timemodified' => userdate((int)$domain->timemodified),
     ];
-
-    foreach ($domains as $domain) {
-        $table->data[] = [
-            s((string)$domain->shortname),
-            s((string)$domain->name),
-            userdate((int)$domain->timemodified),
-        ];
-    }
-
-    echo html_writer::table($table);
 }
+
+$context = [
+    'errornotification' => $error !== '' ? $OUTPUT->notification($error, 'notifyproblem') : '',
+    'csvhelp' => get_string('csvhelp', 'local_profilefield_repeatable'),
+    'url' => $PAGE->url->out(false),
+    'sesskey' => sesskey(),
+    'createdomain' => get_string('createdomain', 'local_profilefield_repeatable'),
+    'importcsv' => get_string('importcsv', 'local_profilefield_repeatable'),
+    'domainshortname' => get_string('domainshortname', 'local_profilefield_repeatable'),
+    'domainname' => get_string('domainname', 'local_profilefield_repeatable'),
+    'csvfile' => get_string('csvfile', 'local_profilefield_repeatable'),
+    'csvtext' => get_string('csvtext', 'local_profilefield_repeatable'),
+    'existingdomains' => get_string('existingdomains', 'local_profilefield_repeatable'),
+    'shortname' => get_string('shortname', 'local_profilefield_repeatable'),
+    'name' => get_string('name', 'local_profilefield_repeatable'),
+    'timemodified' => get_string('timemodified', 'local_profilefield_repeatable'),
+    'none' => get_string('none'),
+    'placeholderdomainshortname' => get_string('placeholderdomainshortname', 'local_profilefield_repeatable'),
+    'placeholderdomainname' => get_string('placeholderdomainname', 'local_profilefield_repeatable'),
+    'hasdomains' => !empty($domainrows),
+    'domains' => $domainrows,
+];
+
+echo $OUTPUT->render_from_template('local_profilefield_repeatable/manage', $context);
 
 echo $OUTPUT->footer();
