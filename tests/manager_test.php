@@ -20,8 +20,8 @@ namespace local_profilefield_repeatable;
  * Tests for local_profilefield_repeatable manager and resolver.
  *
  * @package    local_profilefield_repeatable
- * @covers     \local_profilefield_repeatable\local\Manager
- * @covers     \local_profilefield_repeatable\Resolver
+ * @covers     \local_profilefield_repeatable\local\manager
+ * @covers     \local_profilefield_repeatable\resolver
  * @copyright  2026 Anderson Blaine
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,7 +44,7 @@ final class manager_test extends \advanced_testcase {
             $this->markTestSkipped('local_profilefield_repeatable tables are not available.');
         }
 
-        $manager = new \local_profilefield_repeatable\local\Manager();
+        $manager = new \local_profilefield_repeatable\local\manager();
         $manager->upsert_domain('diretoria', 'Diretoria');
 
         $first = $manager->upsert_items('diretoria', [[
@@ -54,7 +54,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertSame(1, $first['inserted']);
         $this->assertSame(0, $first['updated']);
 
-        $this->assertSame('Sao Paulo', \local_profilefield_repeatable\Resolver::resolve('diretoria', '16'));
+        $this->assertSame('Sao Paulo', \local_profilefield_repeatable\resolver::resolve('diretoria', '16'));
 
         $second = $manager->upsert_items('diretoria', [[
             'code' => '16',
@@ -63,14 +63,14 @@ final class manager_test extends \advanced_testcase {
         $this->assertSame(0, $second['inserted']);
         $this->assertSame(1, $second['updated']);
 
-        $this->assertSame('Sao Paulo - Capital', \local_profilefield_repeatable\Resolver::resolve('diretoria', '16'));
+        $this->assertSame('Sao Paulo - Capital', \local_profilefield_repeatable\resolver::resolve('diretoria', '16'));
     }
 
     /**
      * Ensure CSV parser accepts optional header and returns code-label rows.
      */
     public function test_parse_csv_content_with_header(): void {
-        $manager = new \local_profilefield_repeatable\local\Manager();
+        $manager = new \local_profilefield_repeatable\local\manager();
         $items = $manager->parse_csv_content("code,label\n16,Sao Paulo\n17,Rio");
 
         $this->assertCount(2, $items);

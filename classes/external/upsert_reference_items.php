@@ -23,7 +23,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use invalid_parameter_exception;
-use local_profilefield_repeatable\local\Manager;
+use local_profilefield_repeatable\local\manager;
 
 /**
  * External API for reference upsert.
@@ -32,7 +32,7 @@ use local_profilefield_repeatable\local\Manager;
  * @copyright  2026 Anderson Blaine
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class UpsertReferenceItems extends external_api {
+class upsert_reference_items extends external_api {
     /**
      * Describe input parameters.
      *
@@ -67,12 +67,14 @@ class UpsertReferenceItems extends external_api {
         self::validate_context($context);
         require_capability('local/profilefield_repeatable:managereference', $context);
 
-        if (count($params['items']) > 5000) {
-            throw new invalid_parameter_exception('Maximum batch size exceeded (5000).');
+        if (count($params['items']) > manager::MAX_BATCH_SIZE) {
+            throw new invalid_parameter_exception(
+                get_string('maxbatchsizeexceeded', 'local_profilefield_repeatable', manager::MAX_BATCH_SIZE)
+            );
         }
 
-        $manager = new Manager();
-        return $manager->upsert_items($params['domain'], $params['items']);
+        $service = new manager();
+        return $service->upsert_items($params['domain'], $params['items']);
     }
 
     /**

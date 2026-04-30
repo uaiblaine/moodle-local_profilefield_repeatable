@@ -28,20 +28,18 @@ $functions = [
     'local_profilefield_repeatable_upsert_reference_items' => [
         'classname' => 'local_profilefield_repeatable\\external\\upsert_reference_items',
         'methodname' => 'execute',
-        'classpath' => '',
         'description' => 'Upsert reference code-label pairs for one domain.',
         'type' => 'write',
         'capabilities' => 'local/profilefield_repeatable:managereference',
-        'ajax' => false,
+        'ajax' => true,
     ],
     'local_profilefield_repeatable_get_reference_labels' => [
         'classname' => 'local_profilefield_repeatable\\external\\get_reference_labels',
         'methodname' => 'execute',
-        'classpath' => '',
         'description' => 'Resolve labels for reference codes in one domain.',
         'type' => 'read',
         'capabilities' => 'local/profilefield_repeatable:managereference',
-        'ajax' => false,
+        'ajax' => true,
     ],
 ];
 

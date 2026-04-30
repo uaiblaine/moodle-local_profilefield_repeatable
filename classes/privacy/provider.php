@@ -23,7 +23,7 @@ namespace local_profilefield_repeatable\privacy;
  * @copyright  2026 Anderson Blaine
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class Provider implements
+class provider implements
     \core_privacy\local\metadata\null_provider {
     /**
      * Return language string identifier explaining why no personal data is stored.

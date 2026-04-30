@@ -29,6 +29,8 @@ $definitions = [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => false,
         'simpledata' => true,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 200,
         'ttl' => 3600,
     ],
 ];

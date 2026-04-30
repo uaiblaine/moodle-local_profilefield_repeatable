@@ -23,7 +23,8 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use invalid_parameter_exception;
-use local_profilefield_repeatable\Resolver;
+use local_profilefield_repeatable\local\manager;
+use local_profilefield_repeatable\resolver;
 
 /**
  * External API to resolve reference labels.
@@ -32,7 +33,7 @@ use local_profilefield_repeatable\Resolver;
  * @copyright  2026 Anderson Blaine
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class GetReferenceLabels extends external_api {
+class get_reference_labels extends external_api {
     /**
      * Describe input parameters.
      *
@@ -64,13 +65,13 @@ class GetReferenceLabels extends external_api {
         self::validate_context($context);
         require_capability('local/profilefield_repeatable:managereference', $context);
 
-        if (count($params['codes']) > 5000) {
+        if (count($params['codes']) > manager::MAX_BATCH_SIZE) {
             throw new invalid_parameter_exception(
-                get_string('maxbatchsizeexceeded', 'local_profilefield_repeatable', 5000)
+                get_string('maxbatchsizeexceeded', 'local_profilefield_repeatable', manager::MAX_BATCH_SIZE)
             );
         }
 
-        $labels = Resolver::resolve_bulk($params['domain'], $params['codes']);
+        $labels = resolver::resolve_bulk($params['domain'], $params['codes']);
 
         $items = [];
         foreach ($labels as $code => $label) {

@@ -1,27 +1,15 @@
 {{!
     @template local_profilefield_repeatable/manage
 
-    Management page for reference domains and CSV imports.
+    Lists existing reference domains. Forms are rendered server-side via moodleform.
 
     Example context (json):
     {
-        "errornotification": "",
-        "csvhelp": "Format: code,label. Header line is optional.",
-        "url": "/local/profilefield_repeatable/manage.php",
-        "sesskey": "abc123",
-        "createdomain": "Create or update domain",
-        "importcsv": "Import CSV",
-        "domainshortname": "Domain shortname",
-        "domainname": "Domain name",
-        "csvfile": "CSV file",
-        "csvtext": "CSV content (optional)",
         "existingdomains": "Existing domains",
         "shortname": "Shortname",
         "name": "Name",
         "timemodified": "Time modified",
         "none": "None",
-        "placeholderdomainshortname": "diretoria",
-        "placeholderdomainname": "Diretoria",
         "hasdomains": true,
         "domains": [
             {
@@ -32,81 +20,7 @@
         ]
     }
 }}
-
-{{{errornotification}}}
-
-<p class="text-muted mb-4">{{#csvhelp}}{{csvhelp}}{{/csvhelp}}{{^csvhelp}}CSV help{{/csvhelp}}</p>
-
-<form method="post" action="{{#url}}{{url}}{{/url}}{{^url}}#{{/url}}" class="mb-4 card card-body">
-    <input type="hidden" name="action" value="createdomain">
-    <input type="hidden" name="sesskey" value="{{sesskey}}">
-
-    <h3 class="h5">{{#createdomain}}{{createdomain}}{{/createdomain}}{{^createdomain}}Create domain{{/createdomain}}</h3>
-
-    <div class="row g-3 align-items-end">
-        <div class="col-md-4">
-            <label for="id_domainshortname">{{domainshortname}}</label>
-            <input
-                type="text"
-                name="domainshortname"
-                id="id_domainshortname"
-                class="form-control"
-                placeholder="{{placeholderdomainshortname}}"
-            >
-        </div>
-
-        <div class="col-md-5">
-            <label for="id_domainname">{{domainname}}</label>
-            <input
-                type="text"
-                name="domainname"
-                id="id_domainname"
-                class="form-control"
-                placeholder="{{placeholderdomainname}}"
-            >
-        </div>
-
-        <div class="col-md-3">
-            <input type="submit" class="btn btn-primary w-100" value="{{createdomain}}">
-        </div>
-    </div>
-</form>
-
-<form method="post" action="{{#url}}{{url}}{{/url}}{{^url}}#{{/url}}" class="mb-4 card card-body" enctype="multipart/form-data">
-    <input type="hidden" name="action" value="importcsv">
-    <input type="hidden" name="sesskey" value="{{sesskey}}">
-
-    <h3 class="h5">{{#importcsv}}{{importcsv}}{{/importcsv}}{{^importcsv}}Import CSV{{/importcsv}}</h3>
-
-    <div class="row g-3">
-        <div class="col-md-4">
-            <label for="id_importdomainshortname">{{domainshortname}}</label>
-            <input
-                type="text"
-                name="importdomainshortname"
-                id="id_importdomainshortname"
-                class="form-control"
-                placeholder="{{placeholderdomainshortname}}"
-            >
-        </div>
-
-        <div class="col-md-8">
-            <label for="id_csvfile">{{csvfile}}</label>
-            <input type="file" name="csvfile" id="id_csvfile" class="form-control" accept=".csv,text/csv,text/plain">
-        </div>
-
-        <div class="col-12">
-            <label for="id_csvtext">{{csvtext}}</label>
-            <textarea name="csvtext" id="id_csvtext" class="form-control" rows="6"></textarea>
-        </div>
-
-        <div class="col-12">
-            <input type="submit" class="btn btn-secondary" value="{{importcsv}}">
-        </div>
-    </div>
-</form>
-
-<h3 class="h5">{{#existingdomains}}{{existingdomains}}{{/existingdomains}}{{^existingdomains}}Existing domains{{/existingdomains}}</h3>
+<h3 class="h5 mt-4">{{existingdomains}}</h3>
 
 {{#hasdomains}}
 <table class="table table-striped">
