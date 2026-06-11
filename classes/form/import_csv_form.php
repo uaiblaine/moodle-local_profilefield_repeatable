@@ -37,28 +37,53 @@ class import_csv_form extends moodleform {
     protected function definition(): void {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'importcsvheader',
-            get_string('importcsv', 'local_profilefield_repeatable'));
+        $mform->addElement(
+            'header',
+            'importcsvheader',
+            get_string('importcsv', 'local_profilefield_repeatable')
+        );
 
-        $mform->addElement('text', 'importdomainshortname',
+        $mform->addElement(
+            'text',
+            'importdomainshortname',
             get_string('domainshortname', 'local_profilefield_repeatable'),
-            ['maxlength' => 100, 'size' => 40,
-                'placeholder' => get_string('placeholderdomainshortname', 'local_profilefield_repeatable')]);
+            [
+                'maxlength' => 100,
+                'size' => 40,
+                'placeholder' => get_string('placeholderdomainshortname', 'local_profilefield_repeatable'),
+            ]
+        );
         $mform->setType('importdomainshortname', PARAM_RAW_TRIMMED);
-        $mform->addRule('importdomainshortname',
-            get_string('domainrequired', 'local_profilefield_repeatable'), 'required', null, 'client');
+        $mform->addRule(
+            'importdomainshortname',
+            get_string('domainrequired', 'local_profilefield_repeatable'),
+            'required',
+            null,
+            'client'
+        );
 
-        $mform->addElement('filepicker', 'csvfile',
-            get_string('csvfile', 'local_profilefield_repeatable'), null,
-            ['accepted_types' => ['.csv', '.txt'], 'maxbytes' => 0]);
+        $mform->addElement(
+            'filepicker',
+            'csvfile',
+            get_string('csvfile', 'local_profilefield_repeatable'),
+            null,
+            ['accepted_types' => ['.csv', '.txt'], 'maxbytes' => 0]
+        );
 
-        $mform->addElement('textarea', 'csvtext',
+        $mform->addElement(
+            'textarea',
+            'csvtext',
             get_string('csvtext', 'local_profilefield_repeatable'),
-            ['rows' => 8, 'cols' => 80, 'style' => 'font-family:monospace']);
+            ['rows' => 8, 'cols' => 80, 'style' => 'font-family:monospace']
+        );
         $mform->setType('csvtext', PARAM_RAW);
 
-        $mform->addElement('static', 'csvhelp', '',
-            get_string('csvhelp', 'local_profilefield_repeatable'));
+        $mform->addElement(
+            'static',
+            'csvhelp',
+            '',
+            get_string('csvhelp', 'local_profilefield_repeatable')
+        );
 
         $mform->addElement('hidden', 'action', 'importcsv');
         $mform->setType('action', PARAM_ALPHA);

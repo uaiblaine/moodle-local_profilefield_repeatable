@@ -37,21 +37,41 @@ class create_domain_form extends moodleform {
     protected function definition(): void {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'createdomainheader',
-            get_string('createdomain', 'local_profilefield_repeatable'));
+        $mform->addElement(
+            'header',
+            'createdomainheader',
+            get_string('createdomain', 'local_profilefield_repeatable')
+        );
 
-        $mform->addElement('text', 'domainshortname',
+        $mform->addElement(
+            'text',
+            'domainshortname',
             get_string('domainshortname', 'local_profilefield_repeatable'),
-            ['maxlength' => 100, 'size' => 40,
-                'placeholder' => get_string('placeholderdomainshortname', 'local_profilefield_repeatable')]);
+            [
+                'maxlength' => 100,
+                'size' => 40,
+                'placeholder' => get_string('placeholderdomainshortname', 'local_profilefield_repeatable'),
+            ]
+        );
         $mform->setType('domainshortname', PARAM_RAW_TRIMMED);
-        $mform->addRule('domainshortname',
-            get_string('domainrequired', 'local_profilefield_repeatable'), 'required', null, 'client');
+        $mform->addRule(
+            'domainshortname',
+            get_string('domainrequired', 'local_profilefield_repeatable'),
+            'required',
+            null,
+            'client'
+        );
 
-        $mform->addElement('text', 'domainname',
+        $mform->addElement(
+            'text',
+            'domainname',
             get_string('domainname', 'local_profilefield_repeatable'),
-            ['maxlength' => 255, 'size' => 60,
-                'placeholder' => get_string('placeholderdomainname', 'local_profilefield_repeatable')]);
+            [
+                'maxlength' => 255,
+                'size' => 60,
+                'placeholder' => get_string('placeholderdomainname', 'local_profilefield_repeatable'),
+            ]
+        );
         $mform->setType('domainname', PARAM_TEXT);
 
         $mform->addElement('hidden', 'action', 'createdomain');
