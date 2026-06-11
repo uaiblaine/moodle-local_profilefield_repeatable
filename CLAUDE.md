@@ -10,9 +10,9 @@ Plugin context: a Moodle **local** plugin holding reference dictionaries
 Provides an admin management page (domains + CSV import), a static resolver
 API with MUC caching, and two web-service functions. Supports Moodle **4.5
 through 5.1** (`$plugin->requires = 2024100100`,
-`$plugin->supported = [405, 501]`), release 0.1.0, **MATURITY_ALPHA**. CI is
-the **catalyst/catalyst-moodle-workflows** reusable workflow — it derives the
-test matrix (PHP × PostgreSQL / MariaDB) from the supported range.
+`$plugin->supported = [405, 501]`), **MATURITY_ALPHA**. CI is the
+**moodle-an-hochschulen/moodle-workflows** reusable workflow, called once per
+supported Moodle branch in `.github/workflows/ci.yml`.
 
 ## Commands
 
@@ -30,21 +30,22 @@ hardcode `public/` inside plugin code (`manage.php` resolves config via
 |---------|--------------|
 | `xmllint --noout --schema public/lib/xmldb/xmldb.xsd public/local/profilefield_repeatable/db/install.xml` | Validate the XMLDB schema. (Core libs live under `public/` in this 5.x split layout; the bare `lib/xmldb/...` path does not exist.) |
 
-This plugin has **no AMD/JS** — there is no grunt step. CI
-(catalyst/catalyst-moodle-workflows) gates on `phpcs` (moodle standard, see
-`phpcs.xml`), `phpdoc --max-warnings 0`, mustache lint, and PHPUnit
-(`--fail-on-warning`). There is no committed local wrapper — run these
-through your own `moodle-plugin-ci` checkout before pushing. The CI gate
-only runs the full suite on `pull_request` events or pushes to a
-**protected** ref (`main` is covered by a ruleset).
+This plugin has **no AMD/JS**. CI (moodle-an-hochschulen/moodle-workflows,
+full `moodle-plugin-ci install` per job) gates on: a static leg (`phplint`,
+`phpmd`, `phpcs --max-warnings 0`, `phpdoc --max-warnings 0`, a
+**development-leftover checker that fails on any `TODO`/`@testme`/merge
+markers in any file**, `validate`, `savepoints`, `mustache`, `grunt`) plus
+runtime legs running **PHPUnit (`--fail-on-warning`) and Behat
+(`--profile chrome`) on every PHP × DB combination**; Behat faildumps upload
+as artifacts on failure. `ci.yml` calls the workflow once per supported
+Moodle branch (5.01 full matrix; 5.00/4.05 `one-db-only`) — **update those
+calls when `$plugin->supported` changes**. It runs on every push/PR (no
+protected-ref gate; concurrent runs cancel superseded ones). There is no
+committed local wrapper — run checks through your own `moodle-plugin-ci`
+checkout before pushing.
 
-**Behat runs in its own workflow** ([.github/workflows/behat.yml](.github/workflows/behat.yml),
-standard moodlehq flow, one leg: 5.01 × PHP 8.2 × pgsql) because the catalyst
-snapshot workflow cannot run plugin Behat — the snapshot `config.php` lacks
-the chrome profile, never sets `MOODLE_START_BEHAT_SERVERS`, and `behat.yml`
-is generated before the plugin is copied in (`disable_behat: true` in
-`ci.yml`; flip it if catalyst fixes snapshot Behat). The manage page has two
-forms with identical "Domain shortname" labels — always scope with
+Behat locator note: the manage page has two forms with identical "Domain
+shortname" labels — always scope with
 `in the "Create or update domain" / "Import CSV" "fieldset"`.
 
 Local raw PHPUnit (if wired up) reads `phpunit.xml` at the **repo root**
@@ -81,10 +82,10 @@ The field plugin (`public/user/profile/field/repeatable`, repo
 - **Domain shortname pattern** `/^[a-z0-9_]+$/` is duplicated here
   (`resolver`, `manager`) and in the field plugin (`define.class.php`,
   `display_renderer.php`). Keep all copies in lockstep.
-- **CI cross-installs the other repo's `main`** via `extra_plugin_runners`
-  in `.github/workflows/ci.yml`. A breaking change pushed to either `main`
-  turns the other repo's CI red — coordinate contract changes across both
-  repos.
+- **CI cross-installs the other repo's `main`** via the `plugin-dependencies`
+  input in `.github/workflows/ci.yml`. A breaking change pushed to either
+  `main` turns the other repo's CI red — coordinate contract changes across
+  both repos.
 
 ## Code layout
 
