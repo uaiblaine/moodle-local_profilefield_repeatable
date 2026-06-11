@@ -35,7 +35,7 @@ final class import_csv_form_test extends \advanced_testcase {
         $form = new import_csv_form('/local/profilefield_repeatable/manage.php');
         $errors = $form->validation([
             'importdomainshortname' => 'Bad Domain!',
-            'csvtext' => "01,Sao Paulo",
+            'csvtext' => '01,Sao Paulo',
         ], []);
 
         $this->assertArrayHasKey('importdomainshortname', $errors);
@@ -55,7 +55,7 @@ final class import_csv_form_test extends \advanced_testcase {
         $form = new import_csv_form('/local/profilefield_repeatable/manage.php');
         $errors = $form->validation([
             'importdomainshortname' => 'diretoria',
-            'csvtext' => "01,Sao Paulo",
+            'csvtext' => '01,Sao Paulo',
         ], []);
 
         $this->assertArrayNotHasKey('importdomainshortname', $errors);
