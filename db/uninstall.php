@@ -42,5 +42,13 @@ function xmldb_local_profilefield_repeatable_uninstall(): bool {
         $dbman->drop_table($domaintable);
     }
 
+    // Legacy pre-rename tables may survive on installs that never upgraded.
+    foreach (['local_pfr_item', 'local_pfr_domain'] as $legacyname) {
+        $legacytable = new xmldb_table($legacyname);
+        if ($dbman->table_exists($legacytable)) {
+            $dbman->drop_table($legacytable);
+        }
+    }
+
     return true;
 }

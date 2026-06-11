@@ -32,17 +32,11 @@ class manager {
     /** @var int Maximum batch size for upsert/resolve. */
     public const MAX_BATCH_SIZE = 5000;
 
-    /** @var string Current domain table name. */
+    /** @var string Domain table name. */
     private const DOMAIN_TABLE = 'local_profilefield_repeatable_domain';
 
-    /** @var string Current item table name. */
+    /** @var string Item table name. */
     private const ITEM_TABLE = 'local_profilefield_repeatable_item';
-
-    /** @var string Legacy domain table name kept for backward compatibility. */
-    private const LEGACY_DOMAIN_TABLE = 'local_pfr_domain';
-
-    /** @var string Legacy item table name kept for backward compatibility. */
-    private const LEGACY_ITEM_TABLE = 'local_pfr_item';
 
     /** @var string Domain shortname pattern. */
     private const DOMAIN_PATTERN = '/^[a-z0-9_]+$/';
@@ -56,7 +50,7 @@ class manager {
         global $DB;
 
         $this->ensure_tables_available();
-        return $DB->get_records($this->get_domain_table(), [], 'shortname ASC');
+        return $DB->get_records(self::DOMAIN_TABLE, [], 'shortname ASC');
     }
 
     /**
@@ -70,7 +64,7 @@ class manager {
         global $DB;
 
         $this->ensure_tables_available();
-        $domaintable = $this->get_domain_table();
+        $domaintable = self::DOMAIN_TABLE;
 
         $shortname = $this->normalise_domain_shortname($shortname);
         if ($shortname === '') {
@@ -160,7 +154,7 @@ class manager {
         global $DB;
 
         $this->ensure_tables_available();
-        $itemtable = $this->get_item_table();
+        $itemtable = self::ITEM_TABLE;
 
         $domain = $this->get_domain_by_shortname($domainshortname);
         if (!$domain) {
@@ -308,7 +302,7 @@ class manager {
             return false;
         }
 
-        return $DB->record_exists($this->get_domain_table(), ['shortname' => $domainshortname]);
+        return $DB->record_exists(self::DOMAIN_TABLE, ['shortname' => $domainshortname]);
     }
 
     /**
@@ -325,63 +319,26 @@ class manager {
             return false;
         }
 
-        return $DB->get_record($this->get_domain_table(), ['shortname' => $domainshortname]);
+        return $DB->get_record(self::DOMAIN_TABLE, ['shortname' => $domainshortname]);
     }
 
     /**
      * Ensure plugin tables already exist.
+     *
+     * Write paths fail loudly on partial installs, unlike the resolver
+     * which silently degrades to unresolved labels.
      */
     private function ensure_tables_available(): void {
-        if ($this->get_table_names() === null) {
-            throw new coding_exception(get_string('referencenotables', 'local_profilefield_repeatable'));
-        }
-    }
-
-    /**
-     * Resolve active domain table name (current first, legacy fallback).
-     *
-     * @return string
-     */
-    private function get_domain_table(): string {
-        $tables = $this->get_table_names();
-        return $tables['domain'];
-    }
-
-    /**
-     * Resolve active item table name (current first, legacy fallback).
-     *
-     * @return string
-     */
-    private function get_item_table(): string {
-        $tables = $this->get_table_names();
-        return $tables['item'];
-    }
-
-    /**
-     * Return active table pair or null when neither schema is available.
-     *
-     * @return array{domain: string, item: string}|null
-     */
-    private function get_table_names(): ?array {
         global $DB;
 
         $dbman = $DB->get_manager();
-
-        $hascurrent =
+        $available =
             $dbman->table_exists(new \xmldb_table(self::DOMAIN_TABLE)) &&
             $dbman->table_exists(new \xmldb_table(self::ITEM_TABLE));
-        if ($hascurrent) {
-            return ['domain' => self::DOMAIN_TABLE, 'item' => self::ITEM_TABLE];
-        }
 
-        $haslegacy =
-            $dbman->table_exists(new \xmldb_table(self::LEGACY_DOMAIN_TABLE)) &&
-            $dbman->table_exists(new \xmldb_table(self::LEGACY_ITEM_TABLE));
-        if ($haslegacy) {
-            return ['domain' => self::LEGACY_DOMAIN_TABLE, 'item' => self::LEGACY_ITEM_TABLE];
+        if (!$available) {
+            throw new coding_exception(get_string('referencenotables', 'local_profilefield_repeatable'));
         }
-
-        return null;
     }
 
     /**
