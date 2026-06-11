@@ -88,7 +88,10 @@ class import_csv_form extends moodleform {
         $mform->addElement('hidden', 'action', 'importcsv');
         $mform->setType('action', PARAM_ALPHA);
 
-        $this->add_action_buttons(false, get_string('importcsv', 'local_profilefield_repeatable'));
+        /* Distinct from the section header label: identical strings make the
+         * collapse toggle and the submit button indistinguishable for
+         * screen readers and UI tests alike. */
+        $this->add_action_buttons(false, get_string('importitems', 'local_profilefield_repeatable'));
     }
 
     /**

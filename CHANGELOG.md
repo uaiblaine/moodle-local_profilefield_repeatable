@@ -15,6 +15,11 @@ All notable changes to this project will be documented in this file.
   renames those tables, so the fallback was unreachable on current code); uninstall now also
   drops stray legacy tables
 
+### Changed
+- Form submit buttons renamed to "Save domain" / "Import items": they shared their label with
+  the collapsible section headers, making the collapse toggle and the submit button
+  indistinguishable for assistive technology and UI tests
+
 ## [0.2.0] - 2026-06-10 (ALPHA)
 
 ### Fixed

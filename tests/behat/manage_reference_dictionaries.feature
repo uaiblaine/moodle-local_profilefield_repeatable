@@ -10,7 +10,7 @@ Feature: Manage repeatable reference dictionaries
     And I expand all fieldsets
     And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "iso639"
     And I set the field "Domain name" to "Languages"
-    And I press "Create or update domain"
+    And I press "Save domain"
     Then I should see "Domain saved: iso639"
     And I should see "Languages"
 
@@ -19,7 +19,7 @@ Feature: Manage repeatable reference dictionaries
     When I navigate to "Plugins > Local plugins > Manage repeatable reference dictionaries" in site administration
     And I expand all fieldsets
     And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "Bad Domain!"
-    And I press "Create or update domain"
+    And I press "Save domain"
     Then I should see "Invalid domain shortname. Use lowercase letters, numbers, and underscore only."
 
   Scenario: Import reference items from pasted CSV
@@ -27,7 +27,7 @@ Feature: Manage repeatable reference dictionaries
     And I navigate to "Plugins > Local plugins > Manage repeatable reference dictionaries" in site administration
     And I expand all fieldsets
     And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "iso639"
-    And I press "Create or update domain"
+    And I press "Save domain"
     When I expand all fieldsets
     And I set the field "Domain shortname" in the "Import CSV" "fieldset" to "iso639"
     And I set the field "CSV content (optional)" to multiline:
@@ -36,5 +36,5 @@ Feature: Manage repeatable reference dictionaries
       pt,Portuguese
       en,English
       """
-    And I press "Import CSV"
+    And I press "Import items"
     Then I should see "Import completed. Inserted: 2, Updated: 0, Ignored: 0."
