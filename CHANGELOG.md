@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-06-11 (ALPHA)
+
+### Added
+- Read-only capability `local/profilefield_repeatable:viewreference` for the
+  `get_reference_labels` web service (cloned from `managereference` on upgrade, so existing
+  role assignments keep read access); the write service still requires `managereference`
+- Behat coverage: domain creation, invalid-shortname rejection, and CSV import scenarios
+
+### Removed
+- Legacy `local_pfr_*` runtime table fallback in resolver and manager (the upgrade step
+  renames those tables, so the fallback was unreachable on current code); uninstall now also
+  drops stray legacy tables
+
 ## [0.2.0] - 2026-06-10 (ALPHA)
 
 ### Fixed
@@ -54,6 +67,7 @@ All notable changes to this project will be documented in this file.
 
 | Version | Release Date | Status | Notes |
 |---------|--------------|--------|-------|
+| 0.3.0   | 2026-06-11   | ALPHA  | Read capability, legacy fallback removal, Behat |
 | 0.2.0   | 2026-06-10   | ALPHA  | Real error messages, chunked imports, hardening |
 | 0.1.1   | 2026-04-02   | ALPHA  | Documentation updates (no version.php bump) |
 | 0.1.0   | 2026-04-01   | ALPHA  | Initial release |
