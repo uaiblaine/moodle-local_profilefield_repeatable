@@ -62,7 +62,7 @@ if ($importdata = $importform->get_data()) {
         }
 
         $items = $manager->parse_csv_content($csvcontent);
-        $summary = (object)$manager->upsert_items((string)$importdata->importdomainshortname, $items);
+        $summary = (object)$manager->upsert_items_chunked((string)$importdata->importdomainshortname, $items);
         redirect($PAGE->url, get_string('importsummary', 'local_profilefield_repeatable', $summary));
     } catch (Throwable $e) {
         $error = $e->getMessage();
@@ -79,7 +79,9 @@ try {
 echo $OUTPUT->header();
 
 if ($error !== '') {
-    echo $OUTPUT->notification($error, \core\output\notification::NOTIFY_ERROR);
+    /* Notifications render their message as raw HTML; escape it because
+     * exception messages can carry request-derived values. */
+    echo $OUTPUT->notification(s($error), \core\output\notification::NOTIFY_ERROR);
 }
 
 $createform->display();

@@ -81,6 +81,21 @@ final class upsert_reference_items_test extends \advanced_testcase {
     }
 
     /**
+     * Unknown domains must raise the localised error, not a generic parameter error.
+     */
+    public function test_execute_unknown_domain_throws_with_message(): void {
+        $this->resetAfterTest();
+        $this->require_tables();
+        $this->setAdminUser();
+
+        $this->expectException(\moodle_exception::class);
+        $this->expectExceptionMessage(
+            get_string('errorunknowndomain', 'local_profilefield_repeatable', 'missing_domain')
+        );
+        upsert_reference_items::execute('missing_domain', [['code' => '01', 'label' => 'X']]);
+    }
+
+    /**
      * Requires the manage capability.
      */
     public function test_execute_requires_capability(): void {

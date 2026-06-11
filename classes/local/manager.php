@@ -19,7 +19,7 @@ namespace local_profilefield_repeatable\local;
 use cache;
 use coding_exception;
 use core_text;
-use invalid_parameter_exception;
+use moodle_exception;
 
 /**
  * Manager for reference domains and items.
@@ -74,7 +74,7 @@ class manager {
 
         $shortname = $this->normalise_domain_shortname($shortname);
         if ($shortname === '') {
-            throw new invalid_parameter_exception(get_string('domainrequired', 'local_profilefield_repeatable'));
+            throw new moodle_exception('domainrequired', 'local_profilefield_repeatable');
         }
 
         $name = trim($name);
@@ -164,9 +164,7 @@ class manager {
 
         $domain = $this->get_domain_by_shortname($domainshortname);
         if (!$domain) {
-            throw new invalid_parameter_exception(
-                get_string('errorunknowndomain', 'local_profilefield_repeatable', $domainshortname)
-            );
+            throw new moodle_exception('errorunknowndomain', 'local_profilefield_repeatable', '', $domainshortname);
         }
 
         $counts = [
@@ -253,6 +251,46 @@ class manager {
         }
 
         return $counts;
+    }
+
+    /**
+     * Upsert code-label pairs in bounded chunks, merging result counts.
+     *
+     * Each chunk runs in its own transaction via {@see upsert_items()}, so
+     * arbitrarily large imports (admin CSV upload) never build one huge
+     * transaction. The web services keep the hard MAX_BATCH_SIZE limit.
+     *
+     * @param string $domainshortname
+     * @param array $items
+     * @param int|null $chunksize Defaults to MAX_BATCH_SIZE.
+     * @return array{inserted: int, updated: int, ignored: int}
+     * @throws coding_exception When the chunk size is not positive.
+     * @throws moodle_exception When the domain is unknown.
+     */
+    public function upsert_items_chunked(string $domainshortname, array $items, ?int $chunksize = null): array {
+        $chunksize = $chunksize ?? self::MAX_BATCH_SIZE;
+        if ($chunksize < 1) {
+            throw new coding_exception('Chunk size must be a positive integer.');
+        }
+
+        if (empty($items)) {
+            return $this->upsert_items($domainshortname, $items);
+        }
+
+        $totals = [
+            'inserted' => 0,
+            'updated' => 0,
+            'ignored' => 0,
+        ];
+
+        foreach (array_chunk($items, $chunksize) as $chunk) {
+            $counts = $this->upsert_items($domainshortname, $chunk);
+            $totals['inserted'] += $counts['inserted'];
+            $totals['updated'] += $counts['updated'];
+            $totals['ignored'] += $counts['ignored'];
+        }
+
+        return $totals;
     }
 
     /**

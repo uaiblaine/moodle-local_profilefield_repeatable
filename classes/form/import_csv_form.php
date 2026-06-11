@@ -16,6 +16,7 @@
 
 namespace local_profilefield_repeatable\form;
 
+use core_text;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
@@ -66,7 +67,7 @@ class import_csv_form extends moodleform {
     }
 
     /**
-     * Validate that either a file or pasted CSV content was provided.
+     * Validate the domain shortname and that a file or pasted CSV was provided.
      *
      * @param array $data
      * @param array $files
@@ -75,10 +76,15 @@ class import_csv_form extends moodleform {
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
-        $hastext = trim((string)($data['csvtext'] ?? '')) !== '';
-        $hasfile = !empty($this->get_draft_files('csvfile'));
+        $shortname = core_text::strtolower(trim((string)($data['importdomainshortname'] ?? '')));
+        if ($shortname === '') {
+            $errors['importdomainshortname'] = get_string('domainrequired', 'local_profilefield_repeatable');
+        } else if (!preg_match('/^[a-z0-9_]+$/', $shortname)) {
+            $errors['importdomainshortname'] = get_string('domaininvalid', 'local_profilefield_repeatable');
+        }
 
-        if (!$hastext && !$hasfile) {
+        $hastext = trim((string)($data['csvtext'] ?? '')) !== '';
+        if (!$hastext && empty($this->get_draft_files('csvfile'))) {
             $errors['csvfile'] = get_string('csvrequired', 'local_profilefield_repeatable');
         }
 

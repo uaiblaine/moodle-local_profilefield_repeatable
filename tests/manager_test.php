@@ -79,4 +79,60 @@ final class manager_test extends \advanced_testcase {
         $this->assertSame('17', $items[1]['code']);
         $this->assertSame('Rio', $items[1]['label']);
     }
+
+    /**
+     * Unknown domains must surface the localised error message, not a generic one.
+     */
+    public function test_upsert_items_unknown_domain_throws_with_message(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if (!$DB->get_manager()->table_exists(new \xmldb_table('local_profilefield_repeatable_domain'))) {
+            $this->markTestSkipped('local_profilefield_repeatable tables are not available.');
+        }
+
+        $manager = new \local_profilefield_repeatable\local\manager();
+
+        $this->expectException(\moodle_exception::class);
+        $this->expectExceptionMessage(
+            get_string('errorunknowndomain', 'local_profilefield_repeatable', 'missing_domain')
+        );
+        $manager->upsert_items('missing_domain', [['code' => '1', 'label' => 'X']]);
+    }
+
+    /**
+     * Chunked upsert must process every item across chunk boundaries and merge counts.
+     */
+    public function test_upsert_items_chunked_processes_all_items(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if (!$DB->get_manager()->table_exists(new \xmldb_table('local_profilefield_repeatable_domain'))) {
+            $this->markTestSkipped('local_profilefield_repeatable tables are not available.');
+        }
+
+        $manager = new \local_profilefield_repeatable\local\manager();
+        $manager->upsert_domain('diretoria', 'Diretoria');
+
+        $items = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $items[] = ['code' => 'c' . $i, 'label' => 'Label ' . $i];
+        }
+
+        $counts = $manager->upsert_items_chunked('diretoria', $items, 2);
+
+        $this->assertSame(5, $counts['inserted']);
+        $this->assertSame(0, $counts['updated']);
+        $this->assertSame(0, $counts['ignored']);
+        $this->assertSame(5, $DB->count_records('local_profilefield_repeatable_item'));
+        $this->assertSame('Label 4', \local_profilefield_repeatable\resolver::resolve('diretoria', 'c4'));
+
+        $counts = $manager->upsert_items_chunked('diretoria', $items, 2);
+        $this->assertSame(0, $counts['inserted']);
+        $this->assertSame(5, $counts['ignored']);
+    }
 }
