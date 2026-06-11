@@ -79,8 +79,11 @@ class create_domain_form extends moodleform {
 
         /* Distinct from the section header label: identical strings make the
          * collapse toggle and the submit button indistinguishable for
-         * screen readers and UI tests alike. */
-        $this->add_action_buttons(false, get_string('savedomain', 'local_profilefield_repeatable'));
+         * screen readers and UI tests alike. Named element instead of
+         * add_action_buttons(): two moodleforms share manage.php, and the
+         * default 'submitbutton' name would duplicate the DOM id. */
+        $mform->addElement('submit', 'savedomainbutton', get_string('savedomain', 'local_profilefield_repeatable'));
+        $mform->closeHeaderBefore('savedomainbutton');
     }
 
     /**
