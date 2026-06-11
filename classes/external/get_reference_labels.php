@@ -63,7 +63,7 @@ class get_reference_labels extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('local/profilefield_repeatable:managereference', $context);
+        require_capability('local/profilefield_repeatable:viewreference', $context);
 
         if (count($params['codes']) > manager::MAX_BATCH_SIZE) {
             throw new invalid_parameter_exception(

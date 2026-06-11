@@ -38,7 +38,7 @@ $functions = [
         'methodname' => 'execute',
         'description' => 'Resolve labels for reference codes in one domain.',
         'type' => 'read',
-        'capabilities' => 'local/profilefield_repeatable:managereference',
+        'capabilities' => 'local/profilefield_repeatable:viewreference',
         'ajax' => true,
     ],
 ];

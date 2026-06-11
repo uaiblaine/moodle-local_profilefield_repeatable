@@ -45,6 +45,7 @@ $string['placeholderdomainshortname'] = 'diretoria';
 $string['pluginname'] = 'Referencias repetiveis de campos de perfil';
 $string['privacy:metadata'] = 'O plugin local_profilefield_repeatable armazena dicionarios de referencia para resolver codigo em rotulo.';
 $string['profilefield_repeatable:managereference'] = 'Gerenciar dicionarios de referencia para campos de perfil repetiveis';
+$string['profilefield_repeatable:viewreference'] = 'Ver e resolver dicionarios de referencia para campos de perfil repetiveis';
 $string['referencenotables'] = 'As tabelas de referencia ainda nao estao disponiveis. Execute a atualizacao do plugin.';
 $string['shortname'] = 'Identificador curto';
 $string['timemodified'] = 'Hora de modificacao';

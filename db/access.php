@@ -33,4 +33,12 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    'local/profilefield_repeatable:viewreference' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'local/profilefield_repeatable:managereference',
+    ],
 ];

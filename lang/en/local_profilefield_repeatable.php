@@ -45,6 +45,7 @@ $string['placeholderdomainshortname'] = 'diretoria';
 $string['pluginname'] = 'Profilefield repeatable references';
 $string['privacy:metadata'] = 'The local_profilefield_repeatable plugin stores reference dictionaries for code-to-label resolution.';
 $string['profilefield_repeatable:managereference'] = 'Manage reference dictionaries for profilefield repeatable';
+$string['profilefield_repeatable:viewreference'] = 'View and resolve reference dictionaries for profilefield repeatable';
 $string['referencenotables'] = 'Reference tables are not available yet. Run plugin upgrade.';
 $string['shortname'] = 'Shortname';
 $string['timemodified'] = 'Time modified';

@@ -93,4 +93,38 @@ final class get_reference_labels_test extends \advanced_testcase {
         $this->expectException(\required_capability_exception::class);
         get_reference_labels::execute('diretoria', ['01']);
     }
+
+    /**
+     * The read-only viewreference capability grants label resolution but not upserts.
+     */
+    public function test_execute_allows_viewreference_only_role(): void {
+        $this->resetAfterTest();
+        $this->require_tables();
+        $this->setAdminUser();
+
+        $manager = new \local_profilefield_repeatable\local\manager();
+        $manager->upsert_domain('diretoria', 'Diretoria');
+        $manager->upsert_items('diretoria', [
+            ['code' => '01', 'label' => 'Sao Paulo'],
+        ]);
+
+        $systemcontext = \context_system::instance();
+        $roleid = $this->getDataGenerator()->create_role(['shortname' => 'refreader']);
+        assign_capability(
+            'local/profilefield_repeatable:viewreference',
+            CAP_ALLOW,
+            $roleid,
+            $systemcontext->id
+        );
+        $user = $this->getDataGenerator()->create_user();
+        role_assign($roleid, $user->id, $systemcontext->id);
+        $this->setUser($user);
+
+        $result = get_reference_labels::execute('diretoria', ['01']);
+        $result = external_api::clean_returnvalue(get_reference_labels::execute_returns(), $result);
+        $this->assertSame('Sao Paulo', $result['items'][0]['label']);
+
+        $this->expectException(\required_capability_exception::class);
+        upsert_reference_items::execute('diretoria', [['code' => '02', 'label' => 'Rio']]);
+    }
 }
