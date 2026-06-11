@@ -94,7 +94,8 @@ db/
   upgrade.php / uninstall.php
 templates/manage.mustache    Domain listing table
 lang/en/ + lang/pt_br/       Both maintained in lockstep (same keys)
-tests/                       manager_test, resolver_test, external/*_test
+tests/                       manager_test, resolver_test, external/*_test,
+                             form/import_csv_form_test
 ```
 
 ## Architecture gotchas
@@ -131,11 +132,24 @@ degrades to "no labels" instead of throwing; `manager` throws a
 ### Batch limits and transactions
 
 `manager::MAX_BATCH_SIZE` (5000) is enforced in **both** web services before
-touching the manager. `upsert_items()` pre-fetches existing rows with one
-`get_in_or_equal` query and wraps the write loop in a delegated transaction —
-keep bulk paths to O(1) queries for reads + per-row writes inside the
-transaction, and normalise items via `normalise_item()` (control-character
-stripping, 255-char code truncation) before comparing/writing.
+touching the manager. The admin CSV import (`manage.php`) instead goes
+through `manager::upsert_items_chunked()` — bounded per-chunk transactions,
+no total cap (admins may legitimately import huge dictionaries).
+`upsert_items()` pre-fetches existing rows with one `get_in_or_equal` query
+and wraps the write loop in a delegated transaction — keep bulk paths to
+O(1) queries for reads + per-row writes inside the transaction, and
+normalise items via `normalise_item()` (control-character stripping,
+255-char code truncation) before comparing/writing.
+
+### Exceptions and notifications
+
+User-facing business errors (unknown domain, missing shortname) throw
+`moodle_exception` with the specific lang string — **never**
+`invalid_parameter_exception`, whose constructor buries the text in
+`$debuginfo` and shows users a generic "Invalid parameter value detected".
+Reserve `invalid_parameter_exception` for true parameter-shape violations
+(e.g. the WS batch-size cap). `manage.php` renders caught exception messages
+through `s()` because core notifications output their message as raw HTML.
 
 ## Web services
 

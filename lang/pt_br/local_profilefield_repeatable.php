@@ -36,7 +36,6 @@ $string['domainshortname'] = 'Identificador curto do dominio';
 $string['errorunknowndomain'] = 'Dominio desconhecido: {$a}';
 $string['existingdomains'] = 'Dominios existentes';
 $string['importcsv'] = 'Importar CSV';
-$string['importerror'] = 'Falha na importacao: {$a}';
 $string['importsummary'] = 'Importacao concluida. Inseridos: {$a->inserted}, Atualizados: {$a->updated}, Ignorados: {$a->ignored}.';
 $string['managereference'] = 'Gerenciar dicionarios de referencias repetiveis';
 $string['maxbatchsizeexceeded'] = 'Tamanho maximo do lote excedido ({$a}).';
