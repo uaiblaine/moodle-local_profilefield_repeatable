@@ -1,0 +1,40 @@
+@local @local_profilefield_repeatable @javascript
+Feature: Manage repeatable reference dictionaries
+  In order to resolve repeatable field codes into labels
+  As an admin
+  I need to create reference domains and import code-label pairs
+
+  Scenario: Create a reference domain
+    Given I log in as "admin"
+    When I navigate to "Plugins > Local plugins > Manage repeatable reference dictionaries" in site administration
+    And I expand all fieldsets
+    And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "iso639"
+    And I set the field "Domain name" to "Languages"
+    And I press "Create or update domain"
+    Then I should see "Domain saved: iso639"
+    And I should see "Languages"
+
+  Scenario: Reject an invalid domain shortname
+    Given I log in as "admin"
+    When I navigate to "Plugins > Local plugins > Manage repeatable reference dictionaries" in site administration
+    And I expand all fieldsets
+    And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "Bad Domain!"
+    And I press "Create or update domain"
+    Then I should see "Invalid domain shortname. Use lowercase letters, numbers, and underscore only."
+
+  Scenario: Import reference items from pasted CSV
+    Given I log in as "admin"
+    And I navigate to "Plugins > Local plugins > Manage repeatable reference dictionaries" in site administration
+    And I expand all fieldsets
+    And I set the field "Domain shortname" in the "Create or update domain" "fieldset" to "iso639"
+    And I press "Create or update domain"
+    When I expand all fieldsets
+    And I set the field "Domain shortname" in the "Import CSV" "fieldset" to "iso639"
+    And I set the field "CSV content (optional)" to multiline:
+      """
+      code,label
+      pt,Portuguese
+      en,English
+      """
+    And I press "Import CSV"
+    Then I should see "Import completed. Inserted: 2, Updated: 0, Ignored: 0."
