@@ -44,7 +44,10 @@ Moodle branch (5.01 full matrix; 5.00/4.05 `one-db-only`) — **update those
 calls when `$plugin->supported` changes**. It runs on every push/PR (no
 protected-ref gate; concurrent runs cancel superseded ones). There is no
 committed local wrapper — run checks through your own `moodle-plugin-ci`
-checkout before pushing.
+checkout before pushing. To read a failed job's raw log (the MAH
+reusable-workflow jobs often return empty from `gh run view --log-failed`):
+`gh api repos/uaiblaine/moodle-local_profilefield_repeatable/actions/jobs/<jobid>/logs`
+(get `<jobid>` from `gh run view <runid> --json jobs`).
 
 Behat locator note: the manage page has two forms with identical "Domain
 shortname" labels — always scope with
