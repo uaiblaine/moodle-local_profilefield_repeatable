@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-06-16 (ALPHA)
+
+### Added
+- Moodle 5.2 support (`$plugin->supported = [405, 502]`); CI runs the full PHP × DB
+  matrix on Moodle 5.02 with 5.01/5.00/4.05 on PostgreSQL only.
+- Automated release to the Moodle plugins directory via `moodle-release.yml`
+  (triggered on `v*` tags).
+
+### Changed
+- CI runs on the moodle-an-hochschulen/moodle-workflows reusable workflow (PHPUnit +
+  Behat on every PHP × DB leg), cross-installing the companion `profilefield_repeatable`.
+
 ## [0.3.0] - 2026-06-11 (ALPHA)
 
 ### Added

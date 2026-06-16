@@ -4,7 +4,7 @@ Local plugin to manage reference dictionaries for repeatable profile fields.
 
 ## Requirements
 
-- Moodle 4.5+
+- Moodle 4.5+ (tested through Moodle 5.2)
 - Database baseline from Moodle: PostgreSQL 13+ or MySQL 8.0+
 - Works with Moodle DB abstraction (no vendor-specific SQL)
 - Intended integration with `profilefield_repeatable` plugin

@@ -9,10 +9,12 @@ Plugin context: a Moodle **local** plugin holding reference dictionaries
 **profilefield_repeatable** to resolve stored codes into display labels.
 Provides an admin management page (domains + CSV import), a static resolver
 API with MUC caching, and two web-service functions. Supports Moodle **4.5
-through 5.1** (`$plugin->requires = 2024100100`,
-`$plugin->supported = [405, 501]`), **MATURITY_ALPHA**. CI is the
+through 5.2** (`$plugin->requires = 2024100100`,
+`$plugin->supported = [405, 502]`), **MATURITY_ALPHA**. CI is the
 **moodle-an-hochschulen/moodle-workflows** reusable workflow, called once per
-supported Moodle branch in `.github/workflows/ci.yml`.
+supported Moodle branch in `.github/workflows/ci.yml`; releases to the Moodle
+plugins directory are automated by `.github/workflows/moodle-release.yml`
+(triggered on `v*` tags).
 
 ## Commands
 
@@ -40,7 +42,7 @@ here**, `validate`, `savepoints`, `mustache`, `grunt`) plus
 runtime legs running **PHPUnit (`--fail-on-warning`) and Behat
 (`--profile chrome`) on every PHP × DB combination**; Behat faildumps upload
 as artifacts on failure. `ci.yml` calls the workflow once per supported
-Moodle branch (5.01 full matrix; 5.00/4.05 `one-db-only`) — **update those
+Moodle branch (5.02 full matrix; 5.01/5.00/4.05 `one-db-only`) — **update those
 calls when `$plugin->supported` changes**. It runs on every push/PR (no
 protected-ref gate; concurrent runs cancel superseded ones). There is no
 committed local wrapper — run checks through your own `moodle-plugin-ci`
